@@ -7,6 +7,7 @@ EXPOSE 80
 RUN pip install Flask
 
 COPY ./app.py /app.py
+COPY ./invalidUsage.py /invalidUsage.py
 
 WORKDIR /
 
