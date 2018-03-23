@@ -58,9 +58,9 @@ def send_mail(msg, subj):
         message['To'] = mail_recipient
         
         try:
-        smtp = smtplib.SMTP(smtp_host, port)
-        smtp.login(smtp_user, smtp_pw)
-        smtp.send_message(message)
+            smtp = smtplib.SMTP(smtp_host, port)
+            smtp.login(smtp_user, smtp_pw)
+            smtp.send_message(message)
         except:
             raise InvalidUsage('SMTP host or credentials misconfigured.', 500)
 
