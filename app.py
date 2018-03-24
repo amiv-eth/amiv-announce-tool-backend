@@ -2,7 +2,7 @@
 import urllib
 import smtplib
 import json
-import http.client
+import requests
 from InvalidUsage import InvalidUsage
 from time import time
 from email.mime.text import MIMEText
@@ -18,7 +18,7 @@ smtp_pw = ''
 mail_sender = ''
 mail_recipient = ''
 
-api_addr = 'amiv-api.ethz.ch'
+api_addr = 'http://amiv-api.ethz.ch'
 port = 587
 required_group = ''
 
@@ -68,16 +68,16 @@ def send_mail(msg, subj):
 
 def check_auth(token):
         group_met = False
+        
+        header = {"Authorization":token}
+
         try:
-            api = http.client.HTTPConnection(api_addr)
-            api.request('GET', '/groupmemberships', '', {"Authorization":token})
+            api = requests.get(api_addr + '/groupmemberships', headers=header)
         except:
             raise InvalidUsage('AMIV-API address misconfigured or unreachable', 500)
 
         try:
-            resp = api.getresponse()
-        
-            string = resp.read().decode('ascii')
+            string = api.text
             obj = json.loads(string)
         
             content = obj['_items']
@@ -86,8 +86,15 @@ def check_auth(token):
                 if str(content[i]['_id']) == required_group:
                     group_met = True
                     break
+
+        except KeyError:
+            if str(obj["_status"]) == "ERR":
+                if obj["_error"]["code"] == 401:
+                    raise InvalidUsage('Invalid or expired token.', 401)
+            else:
+                raise InvalidUsage('AMIV-API returned unknown response.', 500)
         except:
-            raise InvalidUsage('AMIV-API returned unknown response', 500)
+            raise InvalidUsage('AMIV-API returned unknown response.', 500)
 
         return group_met
        

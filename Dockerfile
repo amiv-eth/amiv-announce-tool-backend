@@ -5,6 +5,7 @@ ENV FLASK_DEBUG true
 EXPOSE 80
 
 RUN pip install Flask
+RUN pip install requests
 
 COPY ./app.py /app.py
 COPY ./InvalidUsage.py /InvalidUsage.py
