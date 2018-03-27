@@ -11,16 +11,18 @@ from flask import request
 from flask import jsonify
 from urllib.parse import unquote
 
-smtp_host = ''
-smtp_user = ''
-smtp_pw = ''
+smtp_host = 'smtp.ee.ethz.ch'
+smtp_port = 587
 
-mail_sender = ''
-mail_recipient = ''
+smtp_user = 
+smtp_pw = 
 
-api_addr = 'http://amiv-api.ethz.ch'
-port = 587
-required_group = ''
+
+mail_sender = 
+mail_recipient = 
+
+api_addr = 'https://amiv-api.ethz.ch'
+required_group = 
 
 app = Flask(__name__)
 
@@ -58,7 +60,8 @@ def send_mail(msg, subj):
         message['To'] = mail_recipient
         
         try:
-            smtp = smtplib.SMTP(smtp_host, port)
+            smtp = smtplib.SMTP(smtp_host, smtp_port)
+            smtp.starttls()
             smtp.login(smtp_user, smtp_pw)
             smtp.send_message(message)
         except:
