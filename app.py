@@ -1,28 +1,15 @@
 #!/usr/bin/env python3
-import urllib
-import smtplib
-import json
-import requests
-from InvalidUsage import InvalidUsage
+
+import smtplib, requests, config
+
 from time import time
-from email.mime.text import MIMEText
+from json import loads
 from flask import Flask
 from flask import request
 from flask import jsonify
 from urllib.parse import unquote
-
-smtp_host = 'smtp.ee.ethz.ch'
-smtp_port = 587
-
-smtp_user = 
-smtp_pw = 
-
-
-mail_sender = 
-mail_recipient = 
-
-api_addr = 'https://amiv-api.ethz.ch'
-required_group = 
+from email.mime.text import MIMEText
+from InvalidUsage import InvalidUsage
 
 app = Flask(__name__)
 
@@ -56,13 +43,13 @@ def send_mail(msg, subj):
         message = MIMEText(msg, 'html');
         
         message['Subject'] = subj
-        message['From'] = mail_sender
-        message['To'] = mail_recipient
+        message['From'] = config.mail_sender
+        message['To'] = config.mail_recipient
         
         try:
-            smtp = smtplib.SMTP(smtp_host, smtp_port)
+            smtp = smtplib.SMTP(config.smtp_host, config.smtp_port)
             smtp.starttls()
-            smtp.login(smtp_user, smtp_pw)
+            smtp.login(config.smtp_user, config.smtp_pw)
             smtp.send_message(message)
         except:
             raise InvalidUsage('SMTP host or credentials misconfigured.', 500)
@@ -71,22 +58,20 @@ def send_mail(msg, subj):
 
 def check_auth(token):
         group_met = False
-        
-        header = {"Authorization":token}
 
         try:
-            api = requests.get(api_addr + '/groupmemberships', headers=header)
+            api = requests.get(config.api + '/groupmemberships?embedded={"group":1}', auth=requests.auth.HTTPBasicAuth(token, ''))
         except:
             raise InvalidUsage('AMIV-API address misconfigured or unreachable', 500)
 
         try:
             string = api.text
-            obj = json.loads(string)
+            obj = loads(string)
         
             content = obj['_items']
 
             for i in range(0, obj['_meta']['total']):
-                if str(content[i]['_id']) == required_group:
+                if str(content[i]['group']['name']) == config.required_group:
                     group_met = True
                     break
 

@@ -8,6 +8,7 @@ RUN pip install Flask
 RUN pip install requests
 
 COPY ./app.py /app.py
+COPY ./config.py /config.py
 COPY ./InvalidUsage.py /InvalidUsage.py
 
 WORKDIR /
