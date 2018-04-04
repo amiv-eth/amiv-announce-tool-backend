@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-#
 # amiv-announce-tool-backend configuration
 
 # API and authorization config

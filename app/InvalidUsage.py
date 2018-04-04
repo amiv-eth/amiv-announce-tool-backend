@@ -1,5 +1,3 @@
-#/usr/bin/env python3
-
 class InvalidUsage(Exception):
     status_code = 400
 
@@ -20,5 +18,3 @@ class InvalidUsage(Exception):
 
         rv['_error'] = sub
         return rv
-
-
