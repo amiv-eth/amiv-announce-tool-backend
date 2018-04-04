@@ -40,16 +40,16 @@ def handle_request():
 
 def send_mail(msg, subj):
 
-        message = MIMEText(msg, 'html');
+        message = MIMEText(msg, 'html')
         
         message['Subject'] = subj
-        message['From'] = config.mail_sender
-        message['To'] = config.mail_recipient
+        message['From'] = config.MAIL_SENDER
+        message['To'] = config.MAIL_RECEIPIENT
         
         try:
-            smtp = smtplib.SMTP(config.smtp_host, config.smtp_port)
+            smtp = smtplib.SMTP(config.SMTP_HOST, config.SMTP_PORT)
             smtp.starttls()
-            smtp.login(config.smtp_user, config.smtp_pw)
+            smtp.login(config.SMTP_USER, config.SMTP_PASSWORD)
             smtp.send_message(message)
         except:
             raise InvalidUsage('SMTP host or credentials misconfigured.', 500)
@@ -60,7 +60,7 @@ def check_auth(token):
         group_met = False
 
         try:
-            api = requests.get(config.api + '/groupmemberships?embedded={"group":1}', auth=requests.auth.HTTPBasicAuth(token, ''))
+            api = requests.get(config.API_DOMAIN + '/groupmemberships?embedded={"group":1}', auth=requests.auth.HTTPBasicAuth(token, ''))
         except:
             raise InvalidUsage('AMIV-API address misconfigured or unreachable', 500)
 
@@ -71,7 +71,7 @@ def check_auth(token):
             content = obj['_items']
 
             for i in range(0, obj['_meta']['total']):
-                if str(content[i]['group']['name']) == config.required_group:
+                if str(content[i]['group']['name']) == config.REQUIRED_GROUP:
                     group_met = True
                     break
 
