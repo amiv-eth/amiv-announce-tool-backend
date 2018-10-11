@@ -41,3 +41,23 @@ docker service create \
 ```
 
 If you want to use a different name for the secret (or cannot use secrets and have to mount the config manually), you can use the environment variable ANNOUNCe_CONFIG to set the config path in the Announce container.
+
+## Which endpoints are available
+
+### /
+
+This returns error "400 - Wrong Ressource" to prevent uninteded calls to the app
+
+### /mailer
+
+This is the endpoint which is used to send mails with this backend.
+
+It expects three variables via POST:
+
+1. "msg" - This contains the mail itself
+2. "sub" - The subject of the mail
+3. "token" - The AMIV API token to be used for authentication
+
+### /englishman
+
+Here error 418 from RFC 2324 is implemented
