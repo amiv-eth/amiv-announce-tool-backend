@@ -1,3 +1,3 @@
 # requirements for the amiv-announce-tool-backend
-Flask==0.12.2
+Flask==1.0.2
 requests==2.18.4
